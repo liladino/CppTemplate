@@ -29,7 +29,8 @@ const ll INF = 1e9+7;
 #define YES cout << "YES\n"
 #define NO cout << "NO\n"
 #define FOR(i, start, upperbound, step) for (ll i = start; i < upperbound; i += step)
-#define READVEC(v, n) FOR(0, n, 1) { cin >> v[i]; }
+#define READVEC(v, n) FOR(i, 0, n, 1) { cin >> v[i]; }
+
 
 using Graph = vector<vector<ll>>;
 using WeightedGraph = vector<vector<pair<ll, ll>>>;
