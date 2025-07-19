@@ -31,7 +31,6 @@ const ll INF = 1e9+7;
 #define FOR(i, start, upperbound, step) for (ll i = start; i < upperbound; i += step)
 #define READVEC(v, n) FOR(i, 0, n, 1) { cin >> v[i]; }
 
-
 using Graph = vector<vector<ll>>;
 using WeightedGraph = vector<vector<pair<ll, ll>>>;
 
@@ -178,32 +177,25 @@ namespace graphs{
 		Kruskal(n, edges, result);
 	}
 
-	void buildForFulHelperGraph(Graph& graph, Graph& flow, Graph& helper){
-		helper = Graph(graph.size(), vector<ll>(graph.size(), 0));
-		for (ll u = 0; u < graph.size(); u++){
-			for (ll v = 0; v < graph[u].size(); v++){
-				ll c = graph[u][v];
-				if (c == 0) continue;
-				if (flow[u][v] < graph[u][v]){
-					//capacity higher than flow, forwards edge
-					helper[u][v] = c - flow[u][v];
-				}
-				if (flow[u][v] > 0){
-					//backwards edge
-					helper[v][u] = flow[u][v];
+	void FFbuildAdj(Graph& matrix, Graph& adj){
+		adj = Graph(matrix.size());
+		for (ll u = 0; u < matrix.size(); ++u) {
+			for (ll v = 0; v < matrix[u].size(); ++v) {
+				if (matrix[u][v] > 0) {
+					adj[u].push_back(v);
+					adj[v].push_back(u);
 				}
 			}
 		}
 	}
-
-
-	bool FFbfs(ll source, ll sink, Graph& helper, vector<pair<ll, ll>>& route){
-		vector<bool> visited(helper.size());
+	
+	bool FFbfs(ll source, ll sink, Graph& capacities, Graph& adj, Graph& flow, vector<pair<ll, ll>>& reversedRoute){
+		vector<bool> visited(capacities.size());
 		queue<ll> q;
 		q.push(source);
 		visited[source] = true;
 		
-		vector<ll> parent(helper.size(), -1ll);
+		vector<ll> parent(capacities.size(), -1ll);
 
 		bool found = false;
 		while (!q.empty()){
@@ -213,11 +205,19 @@ namespace graphs{
 				break;
 			}
 
-			for (ll v = 0; v < helper[u].size(); v++) {
-				if (visited[v] || helper[u][v] <= 0) continue;
-				visited[v] = true;
-				parent[v] = u;
-				q.push(v);
+			for (ll v : adj[u]) {
+				if (visited[v]) continue;
+				
+				if (flow[u][v] < capacities[u][v]){
+					visited[v] = true;
+					parent[v] = u;
+					q.push(v);
+				}
+				else if (flow[v][u] > 0){
+					visited[v] = true;
+					parent[v] = u;
+					q.push(v);
+				}
 			}
 		}
 
@@ -225,35 +225,36 @@ namespace graphs{
 			return false;
 		}
 
-		route.clear();
+		reversedRoute.clear();
 		for (ll v = sink; v != source; v = parent[v]){
-			route.emplace_back(parent[v], v);
+			reversedRoute.emplace_back(parent[v], v);
 		}
-		reverse(route.begin(), route.end());
+		//reverse(route.begin(), route.end());
 		
 		return true;
 	}
 
 	//the stratpoint, and the graph[u][v] = capacity, 0 = no edge. assumes matrix.
-	ll FordFulkerson(ll source, ll sink, Graph& graph, Graph& flow){
-		flow = Graph(graph.size(), vector<ll>(graph.size(), 0));
+	ll FordFulkerson(ll source, ll sink, Graph& capacities, Graph& flow){
+		flow = Graph(capacities.size(), vector<ll>(capacities.size(), 0));
 		
-		Graph helper;
+		Graph adj;
+		FFbuildAdj(capacities, adj);
+		
 		vector<pair<ll, ll>> route; 
 
 		ll maxflow = 0;
-		while (true){
-			buildForFulHelperGraph(graph, flow, helper);
-
-			if (!FFbfs(source, sink, helper, route)) break;
-
+		while (FFbfs(source, sink, capacities, adj, flow, route)){
 			ll delta = INF;
 			for (auto [u, v] : route) {
-			    delta = min(delta, helper[u][v]);
+				ll d;
+				if (flow[u][v] < capacities[u][v]) d = capacities[u][v] - flow[u][v]; // forward edge
+				else d = flow[v][u]; // backward edge
+			    delta = min(delta, d);
 			}
 
 			for (auto [u, v] : route) {
-				if (flow[u][v] < graph[u][v]) {
+				if (flow[u][v] < capacities[u][v]) {
 					//forwards edge
 					flow[u][v] = flow[u][v] + delta;
 				}
