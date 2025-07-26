@@ -20,6 +20,10 @@ typedef long long ll;
 typedef unsigned long long llu;
 const ll INFLL = (long long)1e18;
 const ll INF = 1e9+7;
+const ll MOD = 1e9+7;
+using Graph = vector<vector<ll>>;
+using WeightedGraph = vector<vector<pair<ll, ll>>>;
+
 #define vll vector<ll>
 #define vll2d vector<vector<ll>>
 #define vllu vector<llu>
@@ -30,9 +34,24 @@ const ll INF = 1e9+7;
 #define NO cout << "NO\n"
 #define FOR(i, start, upperbound, step) for (ll i = start; i < upperbound; i += step)
 #define READVEC(v, n) FOR(i, 0, n, 1) { cin >> v[i]; }
+#define BEGEND(x) x.begin(), x.end()
+#define REVBEGEND(x) x.rbegin(), x.rend()
 
-using Graph = vector<vector<ll>>;
-using WeightedGraph = vector<vector<pair<ll, ll>>>;
+namespace modArithmetic{
+	ll mod_add(ll a, ll b) { return (a + b) % MOD; }
+	ll mod_sub(ll a, ll b) { return (a - b + MOD) % MOD; }
+	ll mod_mul(ll a, ll b) { return (a * b) % MOD; }
+	ll mod_pow(ll a, ll b) {
+		ll res = 1;
+		while (b) {
+			if (b & 1) res = mod_mul(res, a);
+			a = mod_mul(a, a);
+			b >>= 1;
+		}
+		return res;
+	}
+}
+using namespace modArithmetic;
 
 namespace graphs{
 	void dfs(ll node, const Graph& graph, vector<bool>& visited) {
@@ -161,7 +180,7 @@ namespace graphs{
 			if (dsu.find(e.v) != dsu.find(e.u)) {
 				dsu.merge(e.v, e.u);
 				result.push_back(e);
-				if (result.size() == n - 1) break;
+				if (result.size() == (size_t)n - 1) break;
 			}
 		}
 	}
@@ -179,8 +198,8 @@ namespace graphs{
 
 	void FFbuildAdj(Graph& matrix, Graph& adj){
 		adj = Graph(matrix.size());
-		for (ll u = 0; u < matrix.size(); ++u) {
-			for (ll v = 0; v < matrix[u].size(); ++v) {
+		for (ll u = 0; (size_t)u < matrix.size(); ++u) {
+			for (ll v = 0; (size_t)v < matrix[u].size(); ++v) {
 				if (matrix[u][v] > 0) {
 					adj[u].push_back(v);
 					adj[v].push_back(u);
