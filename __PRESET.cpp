@@ -1,39 +1,13 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <unordered_map>
-#include <unordered_set>
-#include <map>
-#include <set>
-#include <queue>
-#include <stack>
-#include <cmath>
-#include <string>
-#include <deque>
-#include <tuple>
-#include <iomanip>
-#include <climits>
-#include <cstdint>
-#include <functional>
-using namespace std;
-typedef long long ll;
-typedef unsigned long long llu;
-const ll INFLL = (long long)1e18;
+#include <bits/stdc++.h>
+using namespace std; 
+using ll = long long; using llu = unsigned long long; using vll = vector<ll>; using vll2d = vector<vector<ll>>; using vllu = vector<llu>; using vllu2d = vector<vector<llu>>; 
+using pll = pair<ll, ll>; using vpll = vector<pll>; const ll INFLL = (long long)1e18; using Graph = vector<vector<ll>>; using WeightedGraph = vector<vector<pair<ll, ll>>>; 
 const ll INF = 1e9+7;
 const ll MOD = 1e9+7;
-using Graph = vector<vector<ll>>;
-using WeightedGraph = vector<vector<pair<ll, ll>>>;
 
-#define vll vector<ll>
-#define vll2d vector<vector<ll>>
-#define vllu vector<llu>
-#define vllu2d vector<vector<llu>>
-#define pll pair<ll, ll>
-#define vpll vector<pll>
 #define YES cout << "YES\n"
 #define NO cout << "NO\n"
 #define FOR(i, start, upperbound, step) for (ll i = start; i < upperbound; i += step)
-#define READVEC(v, n) FOR(i, 0, n, 1) { cin >> v[i]; }
 #define BEGEND(x) x.begin(), x.end()
 #define REVBEGEND(x) x.rbegin(), x.rend()
 
@@ -318,7 +292,7 @@ using namespace graphs;
 //⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠸⣿⣿⣿⣿⣿⣿⣿⣷⠀
 
 void solution(){
-	
+
 }	
 
 int main(){
